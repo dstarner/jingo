@@ -18,7 +18,13 @@ bin/$(BINARY):
 
 .PHONY: test
 test:
-	go test ./...
+	go test $(GO_TEST_ARGS) ./...
+
+.PHONY: test-cover
+COVER_PROFILE=coverage.out
+test-cover: GO_TEST_ARGS = -coverprofile=$(COVER_PROFILE)
+test-cover: test
+	go tool cover -html=$(COVER_PROFILE) -o coverage.html
 
 .PHONY: tidy
 tidy:
@@ -28,14 +34,20 @@ tidy:
 vendor:
 	go mod vendor
 
+.PHONY: clean
+clean:
+	rm -rf vendor
+	rm -rf bin
+	rm -rf coverage.html coverage.out
+
 .PHONY: compile
 compile:
-	echo "Compiling for every OS and Platform"
-	GOOS=linux GOARCH=arm $(MAKE) build
-	GOOS=linux GOARCH=arm64 $(MAKE) build
-	GOOS=linux GOARCH=amd64 $(MAKE) build
-	GOOS=darwin GOARCH=amd64 $(MAKE) build
-	GOOS=freebsd GOARCH=386 $(MAKE) build
-	GOOS=windows GOARCH=amd64 $(MAKE) build
+	@echo "Compiling for every OS and Platform"
+	@GOOS=linux GOARCH=arm $(MAKE) build
+	@GOOS=linux GOARCH=arm64 $(MAKE) build
+	@GOOS=linux GOARCH=amd64 $(MAKE) build
+	@GOOS=darwin GOARCH=amd64 $(MAKE) build
+	@GOOS=freebsd GOARCH=386 $(MAKE) build
+	@GOOS=windows GOARCH=amd64 $(MAKE) build
 
 all: build
