@@ -95,7 +95,7 @@ func TestBasicLang(t *testing.T) {
 				lexer.Token{ Type: symbols["OpenParen"], Value: "(" },
 				lexer.Token{ Type: symbols["Number"], Value: ".03" },
 				lexer.Token{ Type: symbols["CloseParen"], Value: ")" },
-				lexer.Token{ Type: -6, Value: " }}" },
+				lexer.Token{ Type: symbols["VariableClose"], Value: " }}" },
 			  },
 		},
 	}
@@ -107,23 +107,18 @@ func TestBasicLang(t *testing.T) {
 		actual, err := lexer.ConsumeAll(l)
 		require.NoError(t, err)
 
-		testExpected := []lexer.Token{}
-		for _, token := range test.expected {
-			token.Pos = lexer.Position{}
-			testExpected = append(testExpected, token)
-		}
-
+		// removes the Pos value from the tokens since its annoying to test against
 		actualStrip := []lexer.Token{}
 		for _, token := range actual[:len(actual)-1] {
 			token.Pos = lexer.Position{}
 			actualStrip = append(actualStrip, token)
 		}
 
-		if !assert.Equal(t, testExpected, actualStrip) {
+		if !assert.Equal(t, test.expected, actualStrip) {
 			fmt.Println("Actual:")
 			repr.Println(actualStrip, repr.IgnoreGoStringer())
 			fmt.Println("Expected:")
-			repr.Println(testExpected, repr.IgnoreGoStringer())
+			repr.Println(test.expected, repr.IgnoreGoStringer())
 			repr.Println("------------")
 			t.FailNow()
 		}
