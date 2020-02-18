@@ -20,20 +20,23 @@ const jinjaLanguageRegex = `
 BlockComment = blockCommentStartblockCommentEnd
 
 Identity = [[:alpha:]]\w*
-Number = ("." | digit) {"." | digit} .
+Number   = -?[[:digit:]]?\.?[[:digit:]]+
 
 
 VariableOpen  = {{ .variableStartString }}[ ]*
 VariableClose = [ ]*{{ .variableEndString }}
 BlockOpen     = {{ .blockStartString }}[ ]*
 BlockClose    = [ ]*{{ .blockEndString }}
+Pipe          = \|
+
+OpenParen   = \(
+CloseParen  = \)
 
 blockCommentStart = {#
 blockCommentEnd   = #}
 
 alpha = "a"…"z" | "A"…"Z" .
 digit = "0"…"9" .
-
 
 Whitespace    = [ \t\n\r] 
 `
